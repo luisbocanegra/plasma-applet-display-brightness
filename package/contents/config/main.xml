@@ -6,7 +6,8 @@
     <kcfgfile name=""/>
 
     <group name="General">
-        <entry name="manualBrightnessStep" type="Double">
+        <entry name="brightnessStep" type="Double">
             <default>0.1</default>
         </entry>
+    </group>
 </kcfg>
