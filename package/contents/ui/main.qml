@@ -103,13 +103,12 @@ Item {
     }
 
     Plasmoid.toolTipMainText: i18n('DDC/CI Brightness Control')
-    Plasmoid.toolTipSubText: 'Scroll to change brightness<br><br><b>Selected Monitor:</b><br>'+ monitor_name +'<br><br><b>Current Brightness:</b><br>'+ brightnessValue+'%'
+    Plasmoid.toolTipSubText: i18n('Scroll to change brightness<br><br><b>Selected Monitor</b><br>'+ monitor_name +'<br><br><b>Current Brightness</b><br>'+ brightnessValue+'%')
     Plasmoid.toolTipTextFormat: Text.RichText
-    Plasmoid.icon: 'im-jabber'
 
     Component.onCompleted: {
         brightyDS.connectedSources.push(mon_list_Command)
-        console.log("Current monitor: -> "+monitor_name)
+        //console.log("Current monitor: -> "+monitor_name)
     }
 
 }

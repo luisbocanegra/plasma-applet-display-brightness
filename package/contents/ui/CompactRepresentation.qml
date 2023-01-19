@@ -19,14 +19,10 @@ Item {
 
 
     // x100 for better counting
-    property int brightnessIncrement: plasmoid.configuration.brightnessStep * 100
-    property int brightnessMin: 0
-    property int brightnessMax: 100
+    property int brightnessIncrement: plasmoid.configuration.brightnessStep
 
-    property bool textColorLight: ((theme.textColor.r + theme.textColor.g + theme.textColor.b) / 3) > 0.5
-    property color iconColor: textColorLight ? Qt.tint(theme.textColor, '#f6f1f2') : Qt.tint(theme.textColor, '#232627')
-
-    property string buttonImagePath: Qt.resolvedUrl('../icons/sun-flat.svg')
+    property color iconColor: PlasmaCore.Theme.textColor
+    property string buttonImagePath: Qt.resolvedUrl('../icons/video.svg')
 
     IconSVG {
         source: buttonImagePath
