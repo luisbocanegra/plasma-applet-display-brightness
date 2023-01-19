@@ -45,7 +45,7 @@ Item {
     property string changeBrightnessCommand: {
         switch (brightnessBackend) {
             case 0: return 'ddcutil --sn $(echo ' + monitor_name + '| awk \'{print $NF}\') setvcp 10 ' + brightnessValue;
-            case 1: return 'xrandr --output ' + monitor_name + ' --brightness ' + brightnessValue;
+            case 1: return 'xrandr --output ' + monitor_name + ' --brightness ' + brightnessValue/100;
             case 2: return "2";
         }
     }
@@ -61,7 +61,7 @@ Item {
     property string currentBrightnessCommand: {
         switch (brightnessBackend) {
             case 0: return "ddcutil --sn $(echo " + monitor_name + " | awk '{print $NF}') getvcp 10 | awk '{printf \"%i\"\, $9}'";
-            case 1: return "echo 50";
+            case 1: return "xrandr --verbose --current | grep ^"+monitor_name+" -A5 | tail -n1 | awk '{print $2}'";
             case 2: return "2";
         }
     }

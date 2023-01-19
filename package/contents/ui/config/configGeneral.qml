@@ -77,6 +77,7 @@ Kirigami.FormLayout {
     QtControls.RadioButton {
         id: lightMode
         text: i18n("light")
+        visible: false
         checked: cfg_backendMode === 2
     }
     
