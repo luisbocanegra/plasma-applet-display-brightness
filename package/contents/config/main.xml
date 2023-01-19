@@ -5,8 +5,17 @@
     <kcfgfile name="" />
 
     <group name="General">
+        <entry name="minimumBrightness" type="Int">
+            <default>5</default>
+        </entry>
+        <entry name="maximumBrightness" type="Int">
+            <default>100</default>
+        </entry>
         <entry name="brightnessStep" type="Int">
             <default>5</default>
+        </entry>
+        <entry name="backendMode" type="Int">
+            <default>0</default>
         </entry>
     </group>
 </kcfg>

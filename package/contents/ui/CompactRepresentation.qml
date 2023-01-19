@@ -14,17 +14,6 @@ Item {
 
     Layout.minimumWidth: itemWidth
     Layout.minimumHeight: itemHeight
-    //Plasmoid.switchWidth: units.gridUnit * 20
-    //Plasmoid.switchHeight: units.gridUnit * 30
-
-
-    // x100 for better counting
-    property int brightnessIncrement: plasmoid.configuration.brightnessStep
-    property int brightnessMin: plasmoid.configuration.minimumBrightness
-    property int brightnessMax: plasmoid.configuration.maximumBrightness
-
-    property color iconColor: PlasmaCore.Theme.textColor
-    property string buttonImagePath: Qt.resolvedUrl('../icons/video.svg')
 
     IconSVG {
         source: buttonImagePath

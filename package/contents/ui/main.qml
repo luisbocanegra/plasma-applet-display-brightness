@@ -23,22 +23,52 @@ Item {
     id: main
 
     anchors.fill: parent
-
     property bool vertical: (plasmoid.formFactor == PlasmaCore.Types.Vertical)
 
     property int initialBrightnessValue: 50 // fallback value
     property int newBrightness: initialBrightnessValue
     property int currentBrightness: initialBrightnessValue
 
+    property int brightnessIncrement: plasmoid.configuration.brightnessStep
+    property int brightnessMin: plasmoid.configuration.minimumBrightness
+    property int brightnessMax: plasmoid.configuration.maximumBrightness
+    property int brightnessBackend: plasmoid.configuration.backendMode
+
+    property color iconColor: PlasmaCore.Theme.textColor
+    property string buttonImagePath: Qt.resolvedUrl('../icons/video.svg')
+
     property string monitor_name: ''
 
-    //
-    // terminal commands
-    // - commands
     property string brightnessValue: currentBrightness
-    property string changeBrightnessCommand: 'ddcutil --sn $(echo ' + monitor_name + '| awk \'{print $NF}\') setvcp 10 ' + brightnessValue
-    property string mon_list_Command: "ddcutil detect | sed -n -e '/Display/,/VCP version/ p' | grep -E \"Serial number|Model\" | cut -d':' -f2 |awk 'BEGIN {ORS=\" \"};{$1=$1;{print $N}; if (NR %2 == 0) {print \"\\n\"}}' | sed 's/^[ \\t]*//;s/[ \\t]*$//'"
-    property string currentBrightnessCommand: "ddcutil --sn $(echo " + monitor_name + " | awk '{print $NF}') getvcp 10 | awk '{printf \"%i\"\, $9}'"
+    
+    // terminal commands
+    property string changeBrightnessCommand: {
+        switch (brightnessBackend) {
+            case 0: return 'ddcutil --sn $(echo ' + monitor_name + '| awk \'{print $NF}\') setvcp 10 ' + brightnessValue;
+            case 1: return 'xrandr --output ' + monitor_name + ' --brightness ' + brightnessValue;
+            case 2: return "2";
+        }
+    }
+
+    property string mon_list_Command: {
+        switch (brightnessBackend) {
+            case 0: return "ddcutil detect | sed -n -e '/Display/,/VCP version/ p' | grep -E \"Serial number|Model\" | cut -d':' -f2 |awk 'BEGIN {ORS=\" \"};{$1=$1;{print $N}; if (NR %2 == 0) {print \"\\n\"}}' | sed 's/^[ \\t]*//;s/[ \\t]*$//'";
+            case 1: return "xrandr | grep \" connected \" | awk '{ print$1 }' ";
+            case 2: return "2";
+        }
+    }
+
+    property string currentBrightnessCommand: {
+        switch (brightnessBackend) {
+            case 0: return "ddcutil --sn $(echo " + monitor_name + " | awk '{print $NF}') getvcp 10 | awk '{printf \"%i\"\, $9}'";
+            case 1: return "echo 50";
+            case 2: return "2";
+        }
+    }
+
+    //property string changeBrightnessCommand: 'ddcutil --sn $(echo ' + monitor_name + '| awk \'{print $NF}\') setvcp 10 ' + brightnessValue
+    //property string mon_list_Command: "ddcutil detect | sed -n -e '/Display/,/VCP version/ p' | grep -E \"Serial number|Model\" | cut -d':' -f2 |awk 'BEGIN {ORS=\" \"};{$1=$1;{print $N}; if (NR %2 == 0) {print \"\\n\"}}' | sed 's/^[ \\t]*//;s/[ \\t]*$//'"
+    //property string currentBrightnessCommand: "ddcutil --sn $(echo " + monitor_name + " | awk '{print $NF}') getvcp 10 | awk '{printf \"%i\"\, $9}'"
 
     property var mon_list
     property ListModel items: ListModel {}
@@ -108,6 +138,10 @@ Item {
 
     Component.onCompleted: {
         brightyDS.connectedSources.push(mon_list_Command)
+        console.log("############## Backend mode: -> "+brightnessBackend)
+        console.log("############## Monitors list cmd: -> "+mon_list_Command)
+        console.log("############## Change brightness cmd: -> "+changeBrightnessCommand)
+        console.log("############## Current brightness cmd: -> "+currentBrightnessCommand)
         //console.log("Current monitor: -> "+monitor_name)
     }
 
