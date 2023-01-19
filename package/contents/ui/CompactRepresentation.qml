@@ -20,6 +20,8 @@ Item {
 
     // x100 for better counting
     property int brightnessIncrement: plasmoid.configuration.brightnessStep
+    property int brightnessMin: plasmoid.configuration.minimumBrightness
+    property int brightnessMax: plasmoid.configuration.maximumBrightness
 
     property color iconColor: PlasmaCore.Theme.textColor
     property string buttonImagePath: Qt.resolvedUrl('../icons/video.svg')
@@ -40,7 +42,6 @@ Item {
 
 
         onWheel: {
-
             if (brightyDS.connectedSources.length > 0) {
                 return
             }
