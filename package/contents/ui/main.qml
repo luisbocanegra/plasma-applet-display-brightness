@@ -26,7 +26,7 @@ Item {
 
     property bool vertical: (plasmoid.formFactor == PlasmaCore.Types.Vertical)
 
-    property int initialBrightnessValue: 50
+    property int initialBrightnessValue: 50 // fallback value
     property int newBrightness: initialBrightnessValue
     property int currentBrightness: initialBrightnessValue
 
@@ -43,12 +43,9 @@ Item {
     property var mon_list
     property ListModel items: ListModel {}
 
-
     Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
     Plasmoid.compactRepresentation: CompactRepresentation { }
     Plasmoid.fullRepresentation: FullRepresentation {}
-
-
 
     PlasmaCore.DataSource {
         id: brightyDS
@@ -57,21 +54,18 @@ Item {
         onNewData: {
             connectedSources.length = 0
             // get list of monitors
-            if (sourceName == mon_list_Command){
+            if (sourceName == mon_list_Command) {
                 main.mon_list = data.stdout.split('\n')
                 items.clear()
-                if (main.mon_list.length > 0)
-                {
-                    for (var i = 0; i < main.mon_list.length; ++i)
-                    {
-                        if ( main.mon_list[i] != ""){
+                if (main.mon_list.length > 0) {
+                    for (var i = 0; i < main.mon_list.length; ++i) {
+                        if ( main.mon_list[i] != "") {
                             items.append({"name": main.mon_list[i]})
                         }
-
                     }
                 }
                 // set default monitor
-                if (monitor_name == ''){
+                if (monitor_name == '') {
                     monitor_name = main.mon_list[0]
                 }
                 executable.exec(currentBrightnessCommand)
@@ -85,13 +79,13 @@ Item {
         connectedSources: []
         // https://github.com/Zren/plasma-applet-commandoutput/blob/master/package/contents/ui/main.qml
         onNewData: {
-			var exitCode = data["exit code"]
-			var exitStatus = data["exit status"]
-			var stdout = data["stdout"]
-			var stderr = data["stderr"]
-			exited(sourceName, exitCode, exitStatus, stdout, stderr)
-			disconnectSource(sourceName) // cmd finished
-		}
+            var exitCode = data["exit code"]
+            var exitStatus = data["exit status"]
+            var stdout = data["stdout"]
+            var stderr = data["stderr"]
+            exited(sourceName, exitCode, exitStatus, stdout, stderr)
+            disconnectSource(sourceName) // cmd finished
+        }
 
         function exec(cmd) {
             executable.connectSource(cmd)

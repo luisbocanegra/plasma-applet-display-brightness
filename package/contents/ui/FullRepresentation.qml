@@ -20,11 +20,10 @@ Item {
 	Layout.maximumWidth: Layout.preferredWidth
 
 	ComboBox {
-	    editable: false
-	    model: items
-			textRole: 'name'
-        anchors.fill: parent
+		editable: false
+		model: items
+		textRole: 'name'
+		anchors.fill: parent
 		onCurrentIndexChanged: monitor_name = items.get(currentIndex).name
-
 	}
 }

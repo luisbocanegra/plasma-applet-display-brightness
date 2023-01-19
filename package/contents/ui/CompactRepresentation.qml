@@ -50,20 +50,19 @@ Item {
             }
             if (wheel.angleDelta.y > 0) {
                 // wheel up
-                    newBrightness += brightnessIncrement
-                    if (newBrightness > brightnessMax) {
-                        newBrightness = brightnessMax
-                    }
-                    currentBrightness = newBrightness
+                newBrightness += brightnessIncrement
+                if (newBrightness > brightnessMax) {
+                    newBrightness = brightnessMax
+                }
+                currentBrightness = newBrightness
                 
             } else {
                 // wheel down
-                    newBrightness -= brightnessIncrement
-                    if (newBrightness < brightnessMin) {
-                        newBrightness = brightnessMin
-                    }
-                    currentBrightness = newBrightness
-                 
+                newBrightness -= brightnessIncrement
+                if (newBrightness < brightnessMin) {
+                    newBrightness = brightnessMin
+                }
+                currentBrightness = newBrightness
             }
             console.log(changeBrightnessCommand)
             brightyDS.connectedSources.push(changeBrightnessCommand)

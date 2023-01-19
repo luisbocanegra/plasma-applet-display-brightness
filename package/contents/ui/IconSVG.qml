@@ -7,8 +7,8 @@ Image {
     smooth: true
     
     property alias color: colorOverlay.color
-    property int size: 24  // default
-  
+    property int size: 22 // default
+
     sourceSize.width: size
     sourceSize.height: size
 
