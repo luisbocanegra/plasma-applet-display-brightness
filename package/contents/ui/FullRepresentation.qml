@@ -24,7 +24,7 @@ Item {
 		anchors.left: parent.left
 		anchors.right: parent.right
 		//anchors.verticalCenter: (Layout.height != Layout.preferredHeight) ?  parent.verticalCenter : null
-		anchors.fill: (parent.height == PlasmaCore.Units.gridUnit * 6) ? parent : false
+		anchors.fill: (parent.height == PlasmaCore.Units.gridUnit * 6) ? parent: undefined
 		
 		spacing: PlasmaCore.Units.smallSpacing
 		
