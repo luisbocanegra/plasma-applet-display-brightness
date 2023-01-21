@@ -4,7 +4,7 @@
 
 Control external displays brightness through different backends.
 <br clear="left"/>
-**DISCLAIMER: this widget is under active development and may contain bugs that could cause your display remporary unusable**
+**DISCLAIMER: this widget is under active development and may contain bugs that could cause your display temporary unusable**
 
 # Current & planned features 
 - [x] Step size
@@ -14,9 +14,9 @@ Control external displays brightness through different backends.
 - [ ] Check and enable available backends
 
 **Brightness backends**
-  - [x] [ddcutil](https://github.com/rockowitz/ddcutil)
-  - [x] [xrandr](https://www.x.org/releases/X11R7.6/doc/man/man1/xrandr.1.xhtml)
-  - [ ] ACPI
+  - [x] [ddcutil](https://github.com/rockowitz/ddcutil) Control brightness using DDC/CI and USB
+  - [x] [xrandr](https://www.x.org/releases/X11R7.6/doc/man/man1/xrandr.1.xhtml) Control brightness using xrandr for Xorg's Randr extension
+  - [x] [light](https://github.com/haikarainen/light) Control monitor using light for ACPI backlight-controllers
 
 # Screenshots
  <table>
