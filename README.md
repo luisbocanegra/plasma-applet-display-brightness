@@ -6,16 +6,16 @@ Control external displays brightness through different backends
 - Step size
 - Max & Min brightness
 
-- **Brightness backends**
-
-  - [x] [ddcutil](https://github.com/rockowitz/ddcutil)
+**Brightness backends**
+  - [ddcutil](https://github.com/rockowitz/ddcutil)
+  - [xrandr](https://www.x.org/releases/X11R7.6/doc/man/man1/xrandr.1.xhtml)
 
 **Planned features**
-- [ ] Brightness backend selection
-- [ ] Add back [xrandr --brightness](https://www.x.org/releases/X11R7.6/doc/man/man1/xrandr.1.xhtml)
 - [ ] Add ACPI backend
 - [ ] Test multi Monitor
 - [ ] Saving monitor selection across sessions
+- [ ] Check available backends
+- [ ] Custom VCP codes for ddcutil
 
 
 # Acknowledgements
