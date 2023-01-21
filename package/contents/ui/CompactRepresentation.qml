@@ -8,7 +8,6 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 Item {
     id: compactRepresentation
 
-
     property double itemWidth:  parent === null ? 0 : vertical ? parent.width : parent.height
     property double itemHeight: itemWidth
 
@@ -24,34 +23,37 @@ Item {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
+        // hoverEnabled: true
         onClicked: {
             plasmoid.expanded = !plasmoid.expanded
-            brightyDS.connectedSources.push(mon_list_Command)
+            executable.exec(mon_list_Command(),"updateMonitors")
         }
 
 
         onWheel: {
-            if (brightyDS.connectedSources.length > 0) {
+            if (executable.connectedSources.length > 0) {
                 return
             }
             if (wheel.angleDelta.y > 0) {
                 // wheel up
-                newBrightness += brightnessIncrement
-                if (newBrightness > brightnessMax) {
-                    newBrightness = brightnessMax
+                currentBrightness += brightnessIncrement
+                if (currentBrightness > brightnessMax) {
+                    currentBrightness = brightnessMax
                 }
-                currentBrightness = newBrightness
                 
             } else {
                 // wheel down
-                newBrightness -= brightnessIncrement
-                if (newBrightness < brightnessMin) {
-                    newBrightness = brightnessMin
+                currentBrightness -= brightnessIncrement
+                if (currentBrightness < brightnessMin) {
+                    currentBrightness = brightnessMin
                 }
-                currentBrightness = newBrightness
             }
-            console.log(changeBrightnessCommand)
-            brightyDS.connectedSources.push(changeBrightnessCommand)
+            executable.exec(changeBrightnessCommand(monitor_name,currentBrightness),"setBrightness")
         }
+
+        // onEntered: {
+        //     //console.log("ENTERED", currentBrightnessCommand(monitor_name),"\n",changeBrightnessCommand(monitor_name,currentBrightnes""s))
+        //     // console.log("ALL BACKENDS: ",brightnessBackendsList," is ",typeof(brightnessBackendsList)," \ndat: ",plasmoid.configuration.brightnessBackends,"type: ",typeof(plasmoid.configuration.brightnessBackends[0]))
+        // }
     }
 }

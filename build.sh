@@ -10,8 +10,7 @@ do
   fi
 done
 
-plasmoidName=$($kreadconfigBin --file="$PWD/package/metadata.desktop" --group="Desktop Entry" --key="X-KDE-PluginInfo-Name")
-plasmoidName="${plasmoidName##*.}" # Strip namespace (Eg: "org.kde.plasma.")
+plasmoidName=$(basename "$PWD")
 plasmoidVersion=$($kreadconfigBin --file="$PWD/package/metadata.desktop" --group="Desktop Entry" --key="X-KDE-PluginInfo-Version")
 rm ${plasmoidName}-v*.plasmoid
 cd package

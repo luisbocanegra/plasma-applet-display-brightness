@@ -23,10 +23,15 @@ Item {
     id: main
 
     anchors.fill: parent
+    Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
+    Plasmoid.compactRepresentation: CompactRepresentation {}
+    Plasmoid.fullRepresentation: FullRepresentation {}
+
     property bool vertical: (plasmoid.formFactor == PlasmaCore.Types.Vertical)
 
-    property int initialBrightnessValue: 50 // fallback value
-    property int newBrightness: initialBrightnessValue
+    property var brightnessBackendsList: ["ddcutil","xrandr","ACPI"]
+
+    property int initialBrightnessValue: 50 // fallback value?
     property int currentBrightness: initialBrightnessValue
 
     property int brightnessIncrement: plasmoid.configuration.brightnessStep
@@ -40,17 +45,23 @@ Item {
     property string monitor_name: ''
 
     property string brightnessValue: currentBrightness
+
+    property var mon_list
+    property ListModel items: ListModel {}
+
+    property string cmd_type: ''
+    property int activeMon: 0
     
     // terminal commands
-    property string changeBrightnessCommand: {
+    function changeBrightnessCommand(monitor_name,currentBrightness) {
         switch (brightnessBackend) {
-            case 0: return 'ddcutil --sn $(echo ' + monitor_name + '| awk \'{print $NF}\') setvcp 10 ' + brightnessValue;
-            case 1: return 'xrandr --output ' + monitor_name + ' --brightness ' + brightnessValue/100;
+            case 0: return 'ddcutil --sn $(echo ' + monitor_name + '| awk \'{print $NF}\') setvcp 10 ' + currentBrightness;
+            case 1: return 'xrandr --output ' + monitor_name + ' --brightness ' + currentBrightness/100;
             case 2: return "2";
         }
     }
 
-    property string mon_list_Command: {
+    function mon_list_Command() {
         switch (brightnessBackend) {
             case 0: return "ddcutil detect | sed -n -e '/Display/,/VCP version/ p' | grep -E \"Serial number|Model\" | cut -d':' -f2 |awk 'BEGIN {ORS=\" \"};{$1=$1;{print $N}; if (NR %2 == 0) {print \"\\n\"}}' | sed 's/^[ \\t]*//;s/[ \\t]*$//'";
             case 1: return "xrandr | grep \" connected \" | awk '{ print$1 }' ";
@@ -58,48 +69,11 @@ Item {
         }
     }
 
-    property string currentBrightnessCommand: {
+    function currentBrightnessCommand(monitor_name) {
         switch (brightnessBackend) {
             case 0: return "ddcutil --sn $(echo " + monitor_name + " | awk '{print $NF}') getvcp 10 | awk '{printf \"%i\"\, $9}'";
             case 1: return "xrandr --verbose --current | grep ^"+monitor_name+" -A5 | tail -n1 | awk '{print $2}'";
             case 2: return "2";
-        }
-    }
-
-    //property string changeBrightnessCommand: 'ddcutil --sn $(echo ' + monitor_name + '| awk \'{print $NF}\') setvcp 10 ' + brightnessValue
-    //property string mon_list_Command: "ddcutil detect | sed -n -e '/Display/,/VCP version/ p' | grep -E \"Serial number|Model\" | cut -d':' -f2 |awk 'BEGIN {ORS=\" \"};{$1=$1;{print $N}; if (NR %2 == 0) {print \"\\n\"}}' | sed 's/^[ \\t]*//;s/[ \\t]*$//'"
-    //property string currentBrightnessCommand: "ddcutil --sn $(echo " + monitor_name + " | awk '{print $NF}') getvcp 10 | awk '{printf \"%i\"\, $9}'"
-
-    property var mon_list
-    property ListModel items: ListModel {}
-
-    Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
-    Plasmoid.compactRepresentation: CompactRepresentation { }
-    Plasmoid.fullRepresentation: FullRepresentation {}
-
-    PlasmaCore.DataSource {
-        id: brightyDS
-        engine: 'executable'
-
-        onNewData: {
-            connectedSources.length = 0
-            // get list of monitors
-            if (sourceName == mon_list_Command) {
-                main.mon_list = data.stdout.split('\n')
-                items.clear()
-                if (main.mon_list.length > 0) {
-                    for (var i = 0; i < main.mon_list.length; ++i) {
-                        if ( main.mon_list[i] != "") {
-                            items.append({"name": main.mon_list[i]})
-                        }
-                    }
-                }
-                // set default monitor
-                if (monitor_name == '') {
-                    monitor_name = main.mon_list[0]
-                }
-                executable.exec(currentBrightnessCommand)
-            }
         }
     }
 
@@ -117,8 +91,9 @@ Item {
             disconnectSource(sourceName) // cmd finished
         }
 
-        function exec(cmd) {
-            executable.connectSource(cmd)
+            function exec(cmd,type) {
+                cmd_type = type
+                executable.connectSource(cmd)
         }
 
         signal exited(string cmd, int exitCode, int exitStatus, string stdout, string stderr)
@@ -126,23 +101,62 @@ Item {
 
     Connections {
         target: executable
-        onExited: {
-            console.log("Initial brightness -> "+monitor_name +" -> "+stdout)
-            initialBrightnessValue = stdout
+        function onExited(cmd, exitCode, exitStatus, stdout, stderr) {
+            console.log("EXECUTABLE of type -> ",cmd_type)
+            // update current brightness
+            if (cmd_type == "updateCurrentBrightness") {
+                //executable.exec(currentBrightnessCommand(monitor_name),"")
+                console.log("Initial brightness -> "+monitor_name +" -> "+stdout)
+                currentBrightness = (brightnessBackend == 1) ? stdout*100 : stdout
+            }
+
+            // update monitors list
+            if (cmd_type == "updateMonitors") {
+                main.mon_list = stdout.split('\n')
+                items.clear()
+                if (main.mon_list.length > 0) {
+                    for (var i = 0; i < main.mon_list.length; ++i) {
+                        if ( main.mon_list[i] != "") {
+                            items.append({"name": main.mon_list[i]})
+                        }
+                    }
+                }
+                // set default monitor
+                if (monitor_name === '') {
+                    monitor_name = main.mon_list[0]
+                    executable.exec(currentBrightnessCommand(monitor_name),"updateCurrentBrightness")
+                }
+            }
         }
     }
 
-    Plasmoid.toolTipMainText: i18n('DDC/CI Brightness Control')
-    Plasmoid.toolTipSubText: i18n('Scroll to change brightness<br><br><b>Selected Monitor</b><br>'+ monitor_name +'<br><br><b>Current Brightness</b><br>'+ brightnessValue+'%')
+    Plasmoid.toolTipMainText: i18n('Display Brightness Control')
+    Plasmoid.toolTipSubText: i18n('Scroll to change brightness<br><br><b>Selected Display</b><br>'+ monitor_name +'<br><br><b>Current Brightness</b><br>'+ brightnessValue+'%')
     Plasmoid.toolTipTextFormat: Text.RichText
 
     Component.onCompleted: {
-        brightyDS.connectedSources.push(mon_list_Command)
+        executable.exec(mon_list_Command(),"updateMonitors")
         console.log("############## Backend mode: -> "+brightnessBackend)
-        console.log("############## Monitors list cmd: -> "+mon_list_Command)
-        console.log("############## Change brightness cmd: -> "+changeBrightnessCommand)
-        console.log("############## Current brightness cmd: -> "+currentBrightnessCommand)
-        //console.log("Current monitor: -> "+monitor_name)
+        console.log("############## Monitors list cmd: -> "+mon_list_Command(monitor_name))
+        console.log("############## Change brightness cmd: -> "+changeBrightnessCommand(monitor_name,currentBrightness))
+        console.log("############## Current brightness cmd: -> "+currentBrightnessCommand(monitor_name))
+    }
+
+
+    onMonitor_nameChanged: {
+        console.log("############## Monitor changed: ->", monitor_name,"\n cur_cmd:",currentBrightnessCommand(monitor_name))
+        if (monitor_name !== '') { // ignore if new monitor is empty
+            executable.exec(currentBrightnessCommand(monitor_name),"updateCurrentBrightness")
+        }
+    }
+
+    onBrightnessBackendChanged: {
+        console.log("############## Backend Changed: -> "+brightnessBackendsList[brightnessBackend])
+        // force a rescan of monitors after backend changes
+        monitor_name = ''
+        // reset to first monitor
+        activeMon = 0
+        executable.exec(mon_list_Command(),"updateMonitors")
     }
 
 }
