@@ -29,7 +29,7 @@ Item {
 
     property bool vertical: (plasmoid.formFactor == PlasmaCore.Types.Vertical)
 
-    property var brightnessBackendsList: ["ddcutil","xrandr","ACPI"]
+    property var brightnessBackendsList: ["ddcutil","xrandr","light"]
 
     property int initialBrightnessValue: 50 // fallback value?
     property int currentBrightness: initialBrightnessValue
@@ -57,7 +57,7 @@ Item {
         switch (brightnessBackend) {
             case 0: return 'ddcutil --sn $(echo ' + monitor_name + '| awk \'{print $NF}\') setvcp 10 ' + currentBrightness;
             case 1: return 'xrandr --output ' + monitor_name + ' --brightness ' + currentBrightness/100;
-            case 2: return "2";
+            case 2: return "light -s "+monitor_name+" -S "+currentBrightness;
         }
     }
 
@@ -65,7 +65,7 @@ Item {
         switch (brightnessBackend) {
             case 0: return "ddcutil detect | sed -n -e '/Display/,/VCP version/ p' | grep -E \"Serial number|Model\" | cut -d':' -f2 |awk 'BEGIN {ORS=\" \"};{$1=$1;{print $N}; if (NR %2 == 0) {print \"\\n\"}}' | sed 's/^[ \\t]*//;s/[ \\t]*$//'";
             case 1: return "xrandr | grep \" connected \" | awk '{ print$1 }' ";
-            case 2: return "2";
+            case 2: return "light -L | grep '_backlight' | awk '{print $1}'";
         }
     }
 
@@ -73,7 +73,7 @@ Item {
         switch (brightnessBackend) {
             case 0: return "ddcutil --sn $(echo " + monitor_name + " | awk '{print $NF}') getvcp 10 | awk '{printf \"%i\"\, $9}'";
             case 1: return "xrandr --verbose --current | grep ^"+monitor_name+" -A5 | tail -n1 | awk '{print $2}'";
-            case 2: return "2";
+            case 2: return "light -s "+monitor_name+" -G";
         }
     }
 
