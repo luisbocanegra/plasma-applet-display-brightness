@@ -105,13 +105,13 @@ QtLayouts.ColumnLayout {
         QtControls.RadioButton {
             id: acpiMode
             text: "light"
-            visible: false
+            visible: true
             checked: cfg_backendMode === 2
         }
 
         QtControls.Label {
             visible: acpiMode.visible
-            text: i18n("Control monitor using ...")
+            text: i18n("Control monitor using light for ACPI backlight-controllers")
             font: Kirigami.Theme.smallFont
         }
         

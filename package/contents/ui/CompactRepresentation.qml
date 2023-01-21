@@ -48,6 +48,7 @@ Item {
                     currentBrightness = brightnessMin
                 }
             }
+            //console.log(changeBrightnessCommand(monitor_name,currentBrightness));
             executable.exec(changeBrightnessCommand(monitor_name,currentBrightness),"setBrightness")
         }
 
