@@ -61,34 +61,50 @@ Kirigami.FormLayout {
     QtControls.RadioButton {
         id: ddcutilMode
         Kirigami.FormData.label: i18n("Brightness backend:")
-        text: i18n("ddcutil")
+        text: "ddcutil"
         checked: cfg_backendMode === 0
         //checked:
         //visible: reverseMode.visible
         //QtControls.ButtonGroup.group: backendModeRadioButtonGroup
     }
-
-    QtControls.RadioButton {
-        id: xrandrMode
-        text: i18n("xrandr")
-        checked: cfg_backendMode === 1
+    
+    QtControls.Label {
+        text: i18n("Control brightness using DDC/CI and USB")
+        font: Kirigami.Theme.smallFont
     }
 
     QtControls.RadioButton {
-        id: lightMode
-        text: i18n("light")
+        id: xrandrMode
+        text: "xrandr"
+        checked: cfg_backendMode === 1
+    }
+
+    QtControls.Label {
+        text: i18n("Control brightness using xrandr for Xorg's Randr extension")
+        font: Kirigami.Theme.smallFont
+    }
+
+    QtControls.RadioButton {
+        id: acpiMode
+        text: "ACPI"
         visible: false
         checked: cfg_backendMode === 2
+    }
+
+    QtControls.Label {
+        visible: acpiMode.visible
+        text: i18n("Control monitor using ...")
+        font: Kirigami.Theme.smallFont
     }
     
     QtControls.ButtonGroup {
         id: backendModeRadioButtonGroup
-        buttons: [ddcutilMode, xrandrMode, lightMode]
+        buttons: [ddcutilMode, xrandrMode, acpiMode]
         readonly property int value: {
             switch (checkedButton) {
                 case ddcutilMode: return 0;
                 case xrandrMode: return 1;
-                case lightMode: return 2;
+                case acpiMode: return 2;
             }
         }
         onClicked: { cfg_backendMode = value }
