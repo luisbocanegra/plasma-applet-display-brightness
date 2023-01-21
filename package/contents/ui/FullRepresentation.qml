@@ -8,11 +8,12 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddonsComponents
+import org.kde.kirigami 2.19 as Kirigami
 
 Item {
 	id: full
 	Layout.preferredWidth: PlasmaCore.Units.gridUnit * 12
-	Layout.preferredHeight: PlasmaCore.Units.gridUnit * 3
+	Layout.preferredHeight: PlasmaCore.Units.gridUnit * 6
 	Layout.minimumWidth: Layout.preferredWidth
 	Layout.minimumHeight: Layout.preferredHeight
 	Layout.maximumWidth: Layout.preferredWidth
@@ -20,27 +21,41 @@ Item {
 
 	ColumnLayout {
 		id: layout
-		//implicitHeight: column.implicitHeight
-		// implicitWidth: column.implicitWidth
-		anchors.fill: parent
+		anchors.left: parent.left
+		anchors.right: parent.right
+		//anchors.verticalCenter: (Layout.height != Layout.preferredHeight) ?  parent.verticalCenter : null
+		anchors.fill: (parent.height == PlasmaCore.Units.gridUnit * 6) ? parent : false
 		
 		spacing: PlasmaCore.Units.smallSpacing
 		
-		Label {
-			text: i18n("Select a Monitor")
-			//Layout.alignment: Qt.AlignCenter
-			//Layout.leftMargin: PlasmaCore.Units.gridUnit
+		Text {
+			text: i18n("Select a display")
 			Layout.leftMargin: PlasmaCore.Units.smallSpacing
+			color: PlasmaCore.Theme.textColor
+			textFormat: Text.RichText
 		}
 
 		ComboBox {
 			editable: false
 			model: items
 			textRole: 'name'
-			//anchors.right: parent
-			//width: parent.width
+			currentIndex: activeMon
 			Layout.fillWidth: true
-			onCurrentIndexChanged: monitor_name = items.get(currentIndex).name
+			//Layout.bottomMargin: PlasmaCore.Units.smallSpacing
+			// onCurrentIndexChanged: { 
+			onActivated: { 
+				//console.log("COMBO ACTIVATED")
+				monitor_name = items.get(currentIndex).name
+				activeMon = currentIndex
+			}
 		}
+
+		Text {
+			text: i18n("Backend: <b>"+brightnessBackendsList[brightnessBackend]+"</b><br>"+"Open settings to configure")
+			Layout.leftMargin: PlasmaCore.Units.smallSpacing
+			color: PlasmaCore.Theme.textColor
+			textFormat: Text.RichText
+		}
+		
 	}
 }
