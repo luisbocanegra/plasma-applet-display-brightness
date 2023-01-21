@@ -101,7 +101,7 @@ Item {
 
     Connections {
         target: executable
-        onExited: {
+        function onExited(cmd, exitCode, exitStatus, stdout, stderr) {
             console.log("EXECUTABLE of type -> ",cmd_type)
             // update current brightness
             if (cmd_type == "updateCurrentBrightness") {
