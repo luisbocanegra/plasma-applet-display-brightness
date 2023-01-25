@@ -29,7 +29,7 @@ Item {
 
     property bool vertical: (plasmoid.formFactor == PlasmaCore.Types.Vertical)
 
-    property var brightnessBackendsList: ["ddcutil","xrandr","light"]
+    property var backendNames: ["ddcutil","xrandr","light"]
     property int initialBrightnessValue: 50 // fallback value?
     property int currentBrightness: initialBrightnessValue
 
@@ -154,7 +154,7 @@ Item {
     }
 
     onBrightnessBackendChanged: {
-        console.log("############## Backend Changed: -> "+brightnessBackendsList[brightnessBackend])
+        console.log("############## Backend Changed: -> "+backendNames[brightnessBackend])
         // force a rescan of monitors after backend changes
         monitor_name = ''
         // reset to first monitor
