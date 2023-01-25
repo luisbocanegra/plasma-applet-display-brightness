@@ -30,7 +30,6 @@ Item {
     property bool vertical: (plasmoid.formFactor == PlasmaCore.Types.Vertical)
 
     property var brightnessBackendsList: ["ddcutil","xrandr","light"]
-
     property int initialBrightnessValue: 50 // fallback value?
     property int currentBrightness: initialBrightnessValue
 
@@ -106,7 +105,7 @@ Item {
             // update current brightness
             if (cmd_type == "updateCurrentBrightness") {
                 //executable.exec(currentBrightnessCommand(monitor_name),"")
-                console.log("Initial brightness -> "+monitor_name +" -> "+stdout)
+                console.log("Current brightness -> "+monitor_name +" -> "+stdout)
                 currentBrightness = (brightnessBackend == 1) ? stdout*100 : stdout
             }
 
@@ -126,12 +125,16 @@ Item {
                     monitor_name = main.mon_list[0]
                     executable.exec(currentBrightnessCommand(monitor_name),"updateCurrentBrightness")
                 }
+                console.log(mon_list_Command())
+            }
+            if (cmd_type == "setBrightness") {
+                console.log(changeBrightnessCommand(monitor_name,currentBrightness));
             }
         }
     }
 
     Plasmoid.toolTipMainText: i18n('Display Brightness Control')
-    Plasmoid.toolTipSubText: i18n('Scroll to change brightness<br><br><b>Selected Display</b><br>'+ monitor_name +'<br><br><b>Current Brightness</b><br>'+ brightnessValue+'%')
+    Plasmoid.toolTipSubText: i18n('Scroll to adjust brightness<br><br><b>Selected Display</b><br>'+ monitor_name +'<br><br><b>Current Brightness</b><br>'+ brightnessValue+'%')
     Plasmoid.toolTipTextFormat: Text.RichText
 
     Component.onCompleted: {
@@ -157,6 +160,10 @@ Item {
         // reset to first monitor
         activeMon = 0
         executable.exec(mon_list_Command(),"updateMonitors")
+    }
+
+    onCurrentBrightnessChanged: {
+        executable.exec(changeBrightnessCommand(monitor_name,currentBrightness),"setBrightness")
     }
 
 }

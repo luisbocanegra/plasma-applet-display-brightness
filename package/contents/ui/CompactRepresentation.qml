@@ -35,26 +35,19 @@ Item {
                 return
             }
             if (wheel.angleDelta.y > 0) {
-                // wheel up
+                // Increase brightness
                 currentBrightness += brightnessIncrement
                 if (currentBrightness > brightnessMax) {
                     currentBrightness = brightnessMax
                 }
                 
             } else {
-                // wheel down
+                // Decrease brightness
                 currentBrightness -= brightnessIncrement
                 if (currentBrightness < brightnessMin) {
                     currentBrightness = brightnessMin
                 }
             }
-            //console.log(changeBrightnessCommand(monitor_name,currentBrightness));
-            executable.exec(changeBrightnessCommand(monitor_name,currentBrightness),"setBrightness")
         }
-
-        // onEntered: {
-        //     //console.log("ENTERED", currentBrightnessCommand(monitor_name),"\n",changeBrightnessCommand(monitor_name,currentBrightnes""s))
-        //     // console.log("ALL BACKENDS: ",brightnessBackendsList," is ",typeof(brightnessBackendsList)," \ndat: ",plasmoid.configuration.brightnessBackends,"type: ",typeof(plasmoid.configuration.brightnessBackends[0]))
-        // }
     }
 }
