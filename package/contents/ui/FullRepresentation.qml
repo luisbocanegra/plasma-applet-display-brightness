@@ -102,11 +102,10 @@ Item {
 		}
 
 		Text {
-			text: i18n("Backend: <b>"+brightnessBackendsList[brightnessBackend]+"</b><br>"+"Open widget settings to change")
+			text: i18n("Backend: <b>"+backendNames[brightnessBackend]+"</b><br>"+"Open widget settings to change")
 			Layout.leftMargin: PlasmaCore.Units.smallSpacing
 			color: PlasmaCore.Theme.textColor
 			textFormat: Text.RichText
 		}
-		
 	}
 }

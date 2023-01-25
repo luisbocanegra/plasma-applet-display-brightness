@@ -21,100 +21,74 @@ QtLayouts.ColumnLayout {
 
     Kirigami.FormLayout {
         id: generalPage
-        //anchors.left: parent.left
-        //anchors.right: parent.right
-        //anchors.top: header.bottom
-        //anchors.fill: parent
         QtLayouts.Layout.alignment: Qt.AlignTop
-        //QtLayouts.Layout.alignment: parent.top
+        wideMode: false
 
-
-        // property alias cfg_text: textField.text
-        // QtControls.TextField {
-        //     id: textField
-        //     Kirigami.FormData.label: i18n("Text:")
-        // }
-
-        QtLayouts.ColumnLayout {
-            id: header
-            //anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            Text {
-                text: i18n(".")
-                QtLayouts.Layout.leftMargin: PlasmaCore.Units.smallSpacing
-                color: PlasmaCore.Theme.textColor
-                textFormat: Text.RichText
-            }
-        }
-        QtControls1.SpinBox {
-            id: minimumBrightness
-            minimumValue: 0
-            maximumValue: 100
-            Kirigami.FormData.label: i18n("Minimum allowed brightness:")
-            suffix: i18n("%")
-        }
-
-        QtControls1.SpinBox {
-            id: maximumBrightness
-            minimumValue: minimumBrightness.value
-            maximumValue: 100
-            Kirigami.FormData.label: i18n("Maximum allowed brightness:")
-            suffix: i18n("%")
-        }
-
-        QtControls1.SpinBox {
-            id: brightnessStep
-            minimumValue: 1
-            maximumValue: 100
-            Kirigami.FormData.label: i18n("Brightness step:")
-            suffix: i18n("%")
-        }
-
-        Item {
+        Kirigami.Separator {
+            Kirigami.FormData.label: i18n("Behavior")
             Kirigami.FormData.isSection: true
         }
 
-        // based on https://github.com/ismailof/mediacontroller_plus/blob/master/plasmoid/contents/ui/configCompactView.qml
+        QtLayouts.GridLayout {
+            columns: 2
+            
+            QtControls.Label {
+                text: i18n("Minimum allowed brightness:")
+            }
+            QtControls1.SpinBox {
+                id: minimumBrightness
+                minimumValue: 0
+                maximumValue: 100
+                suffix: i18n("%")
+            }
+
+            QtControls.Label {
+                    text: i18n("Maximum allowed brightness:")
+            }
+            QtControls1.SpinBox {
+                id: maximumBrightness
+                minimumValue: minimumBrightness.value
+                maximumValue: 100
+                suffix: i18n("%")
+            }
+
+            QtControls.Label {
+                    text: i18n("Brightness step:")
+            }
+            QtControls1.SpinBox {
+                id: brightnessStep
+                minimumValue: 1
+                maximumValue: 100
+                Kirigami.FormData.label: i18n("Brightness step:")
+                suffix: i18n("%")
+            }
+        }
+
+
+        Kirigami.Separator {
+            Kirigami.FormData.label: i18n("Backend configuration")
+            Kirigami.FormData.isSection: true
+        }
+
         QtControls.RadioButton {
             id: ddcutilMode
-            Kirigami.FormData.label: i18n("Brightness backend:")
-            text: "ddcutil"
             checked: cfg_backendMode === 0
-            //checked:
-            //visible: reverseMode.visible
-            //QtControls.ButtonGroup.group: backendModeRadioButtonGroup
-        }
-        
-        QtControls.Label {
-            text: i18n("Control brightness using DDC/CI and USB")
-            font: Kirigami.Theme.smallFont
+            text: i18n("<b>ddcutil</b> for DDC/CI and USB protocols")
         }
 
         QtControls.RadioButton {
             id: xrandrMode
-            text: "xrandr"
             checked: cfg_backendMode === 1
-        }
-
-        QtControls.Label {
-            text: i18n("Control brightness using xrandr for Xorg's Randr extension")
-            font: Kirigami.Theme.smallFont
+            text: i18n("<b>xrandr</b> for Xorg's Randr extension")
         }
 
         QtControls.RadioButton {
             id: acpiMode
-            text: "light"
-            visible: true
             checked: cfg_backendMode === 2
+            text: i18n("<b>light</b> for ACPI backlight controllers")
         }
 
-        QtControls.Label {
-            visible: acpiMode.visible
-            text: i18n("Control monitor using light for ACPI backlight-controllers")
-            font: Kirigami.Theme.smallFont
-        }
-        
+        // based on https://github.com/ismailof/mediacontroller_plus/blob/master/plasmoid/contents/ui/configCompactView.qml
         QtControls.ButtonGroup {
             id: backendModeRadioButtonGroup
             buttons: [ddcutilMode, xrandrMode, acpiMode]
@@ -129,4 +103,3 @@ QtLayouts.ColumnLayout {
         }
     }
 }
-
