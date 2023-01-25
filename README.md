@@ -2,7 +2,7 @@
 # External Display Brightness Control
 <img src="doc/icon.png" alt="app icon"></td>
 
-Control external displays brightness through different backends.
+Control external displays brightness through various backends.
 <br clear="left"/>
 **DISCLAIMER: this widget is under active development and may contain bugs that could cause your display temporary unusable**
 
@@ -10,13 +10,18 @@ Control external displays brightness through different backends.
 - [x] Step size
 - [x] Max & Min brightness
 - [x] Multi Monitor/Backends support
+- [x] Systray support
+- [x] Slider, like the default battery applet
 - [ ] Saving monitor selection across sessions
-- [ ] Check and enable available backends
+- [ ] Check and enable available backends only
 
 **Brightness backends**
   - [x] [ddcutil](https://github.com/rockowitz/ddcutil) Control brightness using DDC/CI and USB
+    - [ ] Multiplication factor for DDC sleeps `--sleep-multiplier` (faster response)
+    - [ ] Do not read VCP value after setting it `--noverify` (faster response)
+    - [ ] Detect USB devices `--enable-usb`
   - [x] [xrandr](https://www.x.org/releases/X11R7.6/doc/man/man1/xrandr.1.xhtml) Control brightness using xrandr for Xorg's Randr extension
-  - [x] [light](https://github.com/haikarainen/light) Control monitor using light for ACPI backlight-controllers
+  - [x] [light](https://github.com/haikarainen/light) Control monitor using light for ACPI backlight controllers
 
 # Screenshots
  <table>

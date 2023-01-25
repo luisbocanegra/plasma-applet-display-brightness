@@ -1,7 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=External Display Brightness Control
-Comment=Control external displays brightness through different backends
+Comment=Control external displays brightness through various backends
 Icon=video-display
 Type=Service
 
@@ -18,5 +18,6 @@ X-KDE-PluginInfo-Category=Utilities
 X-Plasma-API=declarativeappletscript
 X-Plasma-MainScript=ui/main.qml
 X-Plasma-NotificationArea=true
+#X-KDE-PluginInfo-EnabledByDefault=true
 X-Plasma-NotificationAreaCategory=Hardware
 X-Plasma-RemoteLocation=
